@@ -1,0 +1,116 @@
+file creater
+---
+- hosts: all
+  become: true
+  tasks:
+    - copy:
+       src: /opt/ansible/myfile
+       dest: /etc/ansible
+
+
+creating directory
+---
+- hosts: apps_server
+  become: true
+  tasks:
+    - file:
+       path: /etc/ansible/dir1
+       state: directory
+
+creating multiple tasks
+---
+- name: playbook to run multiple tasks clint server
+  hosts: apps_server
+  become: true
+  tasks:
+    - name: task to create folder
+      file:
+        path: /etc/ansible/test
+        state: directory
+    - name: task to create file
+      file:
+        path: /etc/ansible/dummy
+        state: touch
+    - name: copy the file to clint server
+      copy:
+        src:  /opt/ansible/myfile
+        dest: /opt/ansible/test
+
+installing httpd
+---
+- name: playbook to install httpd
+  hosts: apps_server
+  become: true
+  tasks:
+   - name: task to install httpd
+     action: yum name=httpd state=present / absent
+
+users create 
+---
+- name: playbook to create users
+  hosts: apps_server
+  become: true
+  tasks:
+    - name: task to create user
+      user: name=manju
+
+user creating items
+---
+- name: playbook to create users
+  hosts: apps_server
+  become: true
+  tasks:
+    - name: task to create user
+      user: name={{item}} state=present
+      with_items:
+        - hello
+        - manju
+        - where
+
+
+
+
+handlers in nginx installing 
+---
+- hosts: all
+  become: yes
+  vars:
+    page_title: My Second Landing Page
+    page_description: This is my second landing page description.
+    doc_root: /var/www/mypage
+
+  tasks:
+    - name: Install Nginx
+      apt:
+        name: nginx
+        state: latest
+
+    - name: Make sure new doc root exists
+      file:
+        path: "{{ doc_root }}"
+        state: directory
+        mode: '0755'
+
+    - name: Apply Page Template
+      template:
+        src: files/landing-page.html.j2
+        dest: "{{ doc_root }}/index.html"
+
+    - name: Replace document root on default Nginx configuration
+      replace:
+        path: /etc/nginx/sites-available/default
+        regexp: '(\s+)root /var/www/html;(\s+.*)?$'
+        replace: \g<1>root {{ doc_root }};\g<2>
+      notify: Restart Nginx
+
+    - name: Allow all access to tcp port 80
+      ufw:
+        rule: allow
+        port: '80'
+        proto: tcp
+
+  handlers:
+    - name: Restart Nginx
+      service:
+        name: nginx
+        state: restarted
