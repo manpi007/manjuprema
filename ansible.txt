@@ -121,6 +121,15 @@ kind: pods
 metadata:
   name: nginx
   namespace: xyz
+
+$ sudo apt-get update
+$ sudo apt install docker.io
+$ sudo snap install docker
+$ docker --version
+$ sudo apt-get update
+$ sudo apt install docker.io
+$ sudo snap install docker
+$ docker --version
 spec:
   container:
   - name: nginx
