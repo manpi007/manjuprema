@@ -114,3 +114,18 @@ handlers in nginx installing
       service:
         name: nginx
         state: restarted
+        
+        vi namespace.yml
+apiVersion: v1
+kind: pods
+metadata:
+  name: nginx
+  namespace: xyz
+spec:
+  container:
+  - name: nginx
+    image: nginx:latest
+    ports:
+    - containerport: 80
+
+
