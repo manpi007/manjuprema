@@ -9,5 +9,5 @@
 
 sudo apt-get update
   sudo apt-get install fontconfig openjdk-11-jre
-  sudo apt-get install jenkins
-  sudo apt-get install git
+  sudo apt-get install jenkins -y
+  sudo apt-get install git -y
